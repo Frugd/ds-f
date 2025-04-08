@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Генератор текста для Discord</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #36393F;
+            text-align: center;
+            color: #FFF;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .editor {
+            margin-top: 20px;
+        }
+        .text-area {
+            width: 300px;
+            margin: 0 auto;
+            min-height: 200px;
+            border-radius: 5px;
+            background-color: #2F3136;
+            color: #B9BBBE;
+            border: 1px solid #202225;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 0.875rem;
+            line-height: 1.125rem;
+            text-align: left;
+        }
+        .hidden {
+            display: none;
+        }
+        .button {
+            min-height: 32px;
+            min-width: 32px;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            background-color: #4f545c;
+            font-size: 14px;
+            padding: 2px 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button.active {
+            font-weight: bold;
+        }
+        .info-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .style-button {
+            width: 32px;
+            height: 32px;
+        }
+        .ansi-1 { font-weight: 700; }
+        .ansi-4 { text-decoration: underline; }
+        .ansi-30 { color: #4f545c; }
+        .ansi-31 { color: #dc322f; }
+        .ansi-32 { color: #859900; }
+        .ansi-33 { color: #b58900; }
+        .ansi-34 { color: #268bd2; }
+        .ansi-35 { color: #d33682; }
+        .ansi-36 { color: #2aa198; }
+        .ansi-37 { color: #ffffff; }
+        .ansi-30-bg { background-color: #4f545c; }
+        .ansi-31-bg { background-color: #dc322f; }
+        .ansi-32-bg { background-color: #859900; }
+        .ansi-33-bg { background-color: #b58900; }
+        .ansi-34-bg { background-color: #268bd2; }
+        .ansi-35-bg { background-color: #d33682; }
+        .ansi-36-bg { background-color: #2aa198; }
+        .ansi-37-bg { background-color: #ffffff; }
+        .ansi-40 { background-color: #002b36; }
+        .ansi-41 { background-color: #cb4b16; }
+        .ansi-42 { background-color: #586e75; }
+        .ansi-43 { background-color: #657b83; }
+        .ansi-44 { background-color: #839496; }
+        .ansi-45 { background-color: #6c71c4; }
+        .ansi-46 { background-color: #93a1a1; }
+        .ansi-47 { background-color: #fdf6e3; }
+        .italic { font-style: italic; }
+        .bold { font-weight: bold; }
+        .strikethrough { text-decoration: line-through; }
+        .underline { text-decoration: underline; }
+        .spoiler { background-color: #000; color: #000; }
+        .spoiler:hover { color: #fff; }
+        .link { color: blue; text-decoration: underline; }
+        .multi-quote { border-left: 4px solid #4f545c; padding-left: 10px; }
+        .h1 { font-size: 2em; font-weight: bold; }
+        .h2 { font-size: 1.5em; font-weight: bold; }
+        .h3 { font-size: 1.2em; font-weight: bold; }
+        .small { font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <a href="https://frugd.github.io/ds-f/info" target="_blank" class="info-button" title="Информация и примеры">
+        <img src="img/info-50.PNG" alt="Информация и примеры" width="50" height="50">
+    </a>
+    <h1>Генератор текста для Discord</h1>
+    <div class="container">
+        <button id="color-mode" class="button active">Редактирование цвета</button>
+        <button id="format-mode" class="button">Другое редактирование</button>
+    </div>
+
+    <!-- Редактор цвета -->
+    <div id="color-editor" class="editor">
+        <h2>Редактирование цвета</h2>
+        <div class="style-buttons">
+            <button data-ansi="0" class="button">Сбросить всё</button>
+            <button data-ansi="1" class="button ansi-1">Жирный</button>
+            <button data-ansi="4" class="button ansi-4">Подчеркнуть</button>
+            <br><br>
+            <strong>Цвет текста (FG)</strong>
+            <button data-ansi="30" class="button style-button ansi-30-bg"> </button>
+            <button data-ansi="31" class="button style-button ansi-31-bg"> </button>
+            <button data-ansi="32" class="button style-button ansi-32-bg"> </button>
+            <button data-ansi="33" class="button style-button ansi-33-bg"> </button>
+            <button data-ansi="34" class="button style-button ansi-34-bg"> </button>
+            <button data-ansi="35" class="button style-button ansi-35-bg"> </button>
+            <button data-ansi="36" class="button style-button ansi-36-bg"> </button>
+            <button data-ansi="37" class="button style-button ansi-37-bg"> </button>
+            <br><br>
+            <strong>Цвет фона (BG)</strong>
+            <button data-ansi="40" class="button style-button ansi-40"> </button>
+            <button data-ansi="41" class="button style-button ansi-41"> </button>
+            <button data-ansi="42" class="button style-button ansi-42"> </button>
+            <button data-ansi="43" class="button style-button ansi-43"> </button>
+            <button data-ansi="44" class="button style-button ansi-44"> </button>
+            <button data-ansi="45" class="button style-button ansi-45"> </button>
+            <button data-ansi="46" class="button style-button ansi-46"> </button>
+            <button data-ansi="47" class="button style-button ansi-47"> </button>
+        </div>
+        <div class="text-area" contenteditable="true"></div>
+    </div>
+
+    <!-- Редактор форматирования -->
+    <div id="format-editor" class="editor hidden">
+        <h2>Другое редактирование</h2>
+        <div class="style-buttons">
+            <button data-format="reset" class="button">Сбросить всё</button>
+            <button data-format="italic" class="button">Курсив</button>
+            <button data-format="bold" class="button">Жирный</button>
+            <button data-format="strikethrough" class="button">Зачеркнутый</button>
+            <button data-format="underline" class="button">Подчеркнутый</button>
+            <button data-format="spoiler" class="button">Спойлер</button>
+            <button data-format="link" class="button">Гиперссылка</button>
+            <button data-format="multi-quote" class="button">Многострочная цитата</button>
+            <button data-format="h1" class="button">Заголовок 1</button>
+            <button data-format="h2" class="button">Заголовок 2</button>
+            <button data-format="h3" class="button">Заголовок 3</button>
+            <button data-format="small" class="button">Маленький текст</button>
+        </div>
+        <div class="text-area" contenteditable="true"></div>
+    </div>
+
+    <button class="button copy-button">Скопировать текст для Discord</button>
+
+    <script type="text/javascript">
+        const colorModeBtn = document.getElementById('color-mode');
+        const formatModeBtn = document.getElementById('format-mode');
+        const colorEditor = document.getElementById('color-editor');
+        const formatEditor = document.getElementById('format-editor');
+        const copyBtn = document.querySelector('.copy-button');
+        const colorTextArea = colorEditor.querySelector('.text-area');
+        const formatTextArea = formatEditor.querySelector('.text-area');
+
+        // Показать редактор цвета по умолчанию
+        colorEditor.classList.remove('hidden');
+
+        colorModeBtn.addEventListener('click', () => {
+            colorEditor.classList.remove('hidden');
+            formatEditor.classList.add('hidden');
+            colorModeBtn.classList.add('active');
+            formatModeBtn.classList.remove('active');
+        });
+
+        formatModeBtn.addEventListener('click', () => {
+            formatEditor.classList.remove('hidden');
+            colorEditor.classList.add('hidden');
+            formatModeBtn.classList.add('active');
+            colorModeBtn.classList.remove('active');
+        });
+
+        // Применение стиля к выделенному тексту
+        function applyStyle(textArea, className) {
+            const selection = window.getSelection();
+            if (selection.rangeCount === 0) return;
+            const range = selection.getRangeAt(0);
+            if (range.collapsed) return;
+            const span = document.createElement('span');
+            span.className = className;
+            span.appendChild(range.extractContents());
+            range.insertNode(span);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        // Применение ссылки к выделенному тексту
+        function applyLink(textArea, url) {
+            const selection = window.getSelection();
+            if (selection.rangeCount === 0) return;
+            const range = selection.getRangeAt(0);
+            if (range.collapsed) return;
+            const span = document.createElement('span');
+            span.className = 'link';
+            span.dataset.url = url;
+            span.appendChild(range.extractContents());
+            range.insertNode(span);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        // Кнопки стилей для редактора цвета
+        colorEditor.querySelectorAll('.style-buttons button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ansiCode = btn.dataset.ansi;
+                if (ansiCode === '0') {
+                    colorTextArea.innerHTML = colorTextArea.textContent;
+                } else {
+                    applyStyle(colorTextArea, 'ansi-' + ansiCode);
+                }
+            });
+        });
+
+        // Кнопки стилей для редактора форматирования
+        formatEditor.querySelectorAll('.style-buttons button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const format = btn.dataset.format;
+                if (format === 'reset') {
+                    formatTextArea.innerHTML = formatTextArea.textContent;
+                } else if (format === 'link') {
+                    const url = prompt('Введите URL:');
+                    if (url) {
+                        applyLink(formatTextArea, url);
+                    }
+                } else if (['h1', 'h2', 'h3', 'small'].includes(format)) {
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const anchorNode = selection.anchorNode;
+                        const focusNode = selection.focusNode;
+                        const restrictedClasses = ['h1', 'h2', 'h3', 'small'];
+                        
+                        const isInsideRestricted = (node) => {
+                            while (node && node !== formatTextArea) {
+                                if (node.nodeType === 1 && restrictedClasses.some(cls => node.classList.contains(cls))) {
+                                    return true;
+                                }
+                                node = node.parentNode;
+                            }
+                            return false;
+                        };
+                        
+                        if (isInsideRestricted(anchorNode) || isInsideRestricted(focusNode)) {
+                            return;
+                        }
+                    }
+                    applyStyle(formatTextArea, format);
+                } else {
+                    applyStyle(formatTextArea, format);
+                }
+            });
+        });
+
+        // Преобразование узлов DOM в ANSI
+        function nodesToANSI(nodes, states) {
+            let text = "";
+            for (const node of nodes) {
+                if (node.nodeType === 3) {
+                    text += node.textContent;
+                    continue;
+                }
+                if (node.nodeName === "BR") {
+                    text += "\n";
+                    continue;
+                }
+                const ansiCode = node.className ? parseInt(node.className.split("-")[1]) : null;
+                if (!ansiCode) continue;
+                const newState = Object.assign({}, states.at(-1));
+                if (ansiCode < 30) newState.st = ansiCode;
+                if (ansiCode >= 30 && ansiCode < 40) newState.fg = ansiCode;
+                if (ansiCode >= 40) newState.bg = ansiCode;
+                states.push(newState);
+                text += `\x1b[${newState.st};${(ansiCode >= 40) ? newState.bg : newState.fg}m`;
+                text += nodesToANSI(node.childNodes, states);
+                states.pop();
+                text += `\x1b[0m`;
+                if (states.at(-1).fg !== 2) text += `\x1b[${states.at(-1).st};${states.at(-1).fg}m`;
+                if (states.at(-1).bg !== 2) text += `\x1b[${states.at(-1).st};${states.at(-1).bg}m`;
+            }
+            return text;
+        }
+
+        // Преобразование узлов DOM в Markdown
+        function nodesToMarkdown(nodes) {
+            let markdown = '';
+            for (const node of nodes) {
+                if (node.nodeType === 3) {
+                    markdown += node.textContent;
+                } else if (node.nodeName === 'BR') {
+                    markdown += '\n';
+                } else if (node.nodeName === 'SPAN') {
+                    const classes = node.classList;
+                    let prefix = '';
+                    let suffix = '';
+                    if (classes.contains('italic')) {
+                        prefix += '*';
+                        suffix = '*' + suffix;
+                    }
+                    if (classes.contains('bold')) {
+                        prefix += '**';
+                        suffix = '**' + suffix;
+                    }
+                    if (classes.contains('strikethrough')) {
+                        prefix += '~~';
+                        suffix = '~~' + suffix;
+                    }
+                    if (classes.contains('underline')) {
+                        prefix += '__';
+                        suffix = '__' + suffix;
+                    }
+                    if (classes.contains('spoiler')) {
+                        prefix += '||';
+                        suffix = '||' + suffix;
+                    }
+                    if (classes.contains('multi-quote')) {
+                        prefix += '>>> ';
+                        suffix = '' + suffix;
+                    }
+                    if (classes.contains('h1')) {
+                        prefix += '# ';
+                        suffix = '' + suffix;
+                    }
+                    if (classes.contains('h2')) {
+                        prefix += '## ';
+                        suffix = '' + suffix;
+                    }
+                    if (classes.contains('h3')) {
+                        prefix += '### ';
+                        suffix = '' + suffix;
+                    }
+                    if (classes.contains('small')) {
+                        prefix += '-# ';
+                        suffix = '' + suffix;
+                    }
+                    if (classes.contains('link')) {
+                        const url = node.dataset.url || '';
+                        markdown += '[' + nodesToMarkdown(node.childNodes) + '](' + url + ')';
+                    } else {
+                        markdown += prefix + nodesToMarkdown(node.childNodes) + suffix;
+                    }
+                }
+            }
+            return markdown;
+        }
+
+        // Логика кнопки копирования
+        copyBtn.addEventListener('click', () => {
+            let textToCopy;
+            if (!colorEditor.classList.contains('hidden')) {
+                const ansiText = nodesToANSI(colorTextArea.childNodes, [{ fg: 2, bg: 2, st: 2 }]);
+                textToCopy = '```ansi\n' + ansiText + '\n```';
+            } else {
+                const markdownText = nodesToMarkdown(formatTextArea.childNodes);
+                textToCopy = markdownText;
+            }
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                copyBtn.textContent = 'Скопировано!';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Скопировать текст для Discord';
+                }, 2000);
+            }).catch(err => {
+                alert('Ошибка копирования: ' + err);
+            });
+        });
+    </script>
+</body>
+</html>
