@@ -1,1 +1,44 @@
-
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой сайт на GitHub Pages</title>
+    <style>
+        body {
+            background-color: #2F3136; /* Цвет фона */
+            margin: 0; /* Убираем отступы */
+            padding: 20px; /* Внутренний отступ */
+            font-family: Arial, sans-serif; /* Шрифт */
+        }
+        .gallery {
+            display: flex; /* Гибкий контейнер */
+            flex-wrap: wrap; /* Перенос строк */
+            gap: 20px; /* Расстояние между фото */
+            justify-content: center; /* Центрирование */
+        }
+        .gallery img {
+            max-width: 300px; /* Ширина фото */
+            height: auto; /* Пропорции */
+            border-radius: 10px; /* Скругленные углы */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Тень */
+            border: 2px solid #40444B; /* Обводка */
+            transition: transform 0.3s; /* Плавное увеличение */
+        }
+        .gallery img:hover {
+            transform: scale(1.05); /* Увеличение на 5% */
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: white; text-align: center;">Примеры применения</h1>
+    <div class="gallery">
+        <img src="img/2025-04-11 11-14-56.gif" alt="Пример 1">
+        <img src="img/photo2.jpg" alt="Пример 2">
+        <img src="img/photo3.jpg" alt="Пример 3">
+        <img src="img/photo4.jpg" alt="Пример 4">
+        <img src="img/photo5.jpg" alt="Пример 5">
+        <img src="img/photo6.jpg" alt="Пример 6">
+    </div>
+</body>
+</html>
