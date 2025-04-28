@@ -109,7 +109,6 @@
         <button id="format-mode" class="button">Другое редактирование</button>
     </div>
 
-    <!-- Редактор цвета -->
     <div id="color-editor" class="editor">
         <div class="style-buttons">
             <button data-ansi="0" class="button">Сбросить всё</button>
@@ -139,7 +138,6 @@
         <div class="text-area" contenteditable="true"></div>
     </div>
 
-    <!-- Редактор форматирования -->
     <div id="format-editor" class="editor hidden">
         <div class="style-buttons">
             <button data-format="reset" class="button">Сбросить всё</button>
@@ -169,7 +167,6 @@
         const colorTextArea = colorEditor.querySelector('.text-area');
         const formatTextArea = formatEditor.querySelector('.text-area');
 
-        // Показать редактор цвета по умолчанию
         colorEditor.classList.remove('hidden');
 
         colorModeBtn.addEventListener('click', () => {
@@ -186,7 +183,6 @@
             colorModeBtn.classList.remove('active');
         });
 
-        // Применение стиля к выделенному тексту
         function applyStyle(textArea, className) {
             const selection = window.getSelection();
             if (selection.rangeCount === 0) return;
@@ -200,7 +196,6 @@
             selection.addRange(range);
         }
 
-        // Применение ссылки к выделенному тексту
         function applyLink(textArea, url) {
             const selection = window.getSelection();
             if (selection.rangeCount === 0) return;
@@ -215,7 +210,6 @@
             selection.addRange(range);
         }
 
-        // Кнопки стилей для редактора цвета
         colorEditor.querySelectorAll('.style-buttons button').forEach(btn => {
             btn.addEventListener('click', () => {
                 const ansiCode = btn.dataset.ansi;
@@ -227,7 +221,6 @@
             });
         });
 
-        // Кнопки стилей для редактора форматирования
         formatEditor.querySelectorAll('.style-buttons button').forEach(btn => {
             btn.addEventListener('click', () => {
                 const format = btn.dataset.format;
@@ -266,7 +259,6 @@
             });
         });
 
-        // Преобразование узлов DOM в ANSI
         function nodesToANSI(nodes, states) {
             let text = "";
             for (const node of nodes) {
@@ -295,7 +287,6 @@
             return text;
         }
 
-        // Преобразование узлов DOM в Markdown
         function nodesToMarkdown(nodes) {
             let markdown = '';
             for (const node of nodes) {
@@ -358,7 +349,6 @@
             return markdown;
         }
 
-        // Логика кнопки копирования
         copyBtn.addEventListener('click', () => {
             let textToCopy;
             if (!colorEditor.classList.contains('hidden')) {
